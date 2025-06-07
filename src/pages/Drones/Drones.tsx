@@ -39,7 +39,7 @@ const getBatteryIcon = (level: number) => {
   return <BatteryChargingFull />;
 };
 
-const Drones: React.FC = () => {
+const Drones = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { drones, loading, error } = useSelector((state: RootState) => state.drones);
   const [dialogOpen, setDialogOpen] = useState(false);

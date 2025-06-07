@@ -21,6 +21,7 @@ export interface Drone {
 export interface Mission {
   _id: string;
   name: string;
+  description: string;
   site: string;
   drone: string;
   flightPath: Waypoint[];
@@ -33,8 +34,8 @@ export interface Mission {
   };
   status: 'planned' | 'in-progress' | 'completed' | 'aborted';
   progress: number;
-  startTime?: Date;
-  endTime?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface SurveyReport {

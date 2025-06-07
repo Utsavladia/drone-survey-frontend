@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Drone } from '../../types';
-import { droneApi } from '../../services/api';
+import { droneService } from '../../services/droneService';
 
 interface DroneState {
   drones: Drone[];
@@ -17,9 +17,9 @@ const initialState: DroneState = {
 };
 
 export const fetchDrones = createAsyncThunk(
-  'drones/fetchAll',
+  'drones/fetchDrones',
   async () => {
-    const response = await droneApi.getAll();
+    const response = await droneService.getDrones();
     return response.data;
   }
 );
@@ -27,7 +27,7 @@ export const fetchDrones = createAsyncThunk(
 export const fetchDroneById = createAsyncThunk(
   'drones/fetchById',
   async (id: string) => {
-    const response = await droneApi.getById(id);
+    const response = await droneService.getDroneById(id);
     return response.data;
   }
 );
@@ -38,6 +38,18 @@ const droneSlice = createSlice({
   reducers: {
     clearSelectedDrone: (state) => {
       state.selectedDrone = null;
+    },
+    updateDrone: (state, action: PayloadAction<Drone>) => {
+      const index = state.drones.findIndex(drone => drone._id === action.payload._id);
+      if (index !== -1) {
+        state.drones[index] = action.payload;
+      }
+    },
+    updateDroneStatus: (state, action: PayloadAction<{ droneId: string; status: string }>) => {
+      const index = state.drones.findIndex(drone => drone._id === action.payload.droneId);
+      if (index !== -1) {
+        state.drones[index].status = action.payload.status as any;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -69,5 +81,5 @@ const droneSlice = createSlice({
   },
 });
 
-export const { clearSelectedDrone } = droneSlice.actions;
+export const { clearSelectedDrone, updateDrone, updateDroneStatus } = droneSlice.actions;
 export default droneSlice.reducer; 
