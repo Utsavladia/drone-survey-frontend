@@ -9,6 +9,8 @@ export interface DroneLocation {
   speed: number;
   timestamp: Date;
   batteryLevel: number;
+  progress: number;
+  estimatedTimeRemaining: number;
 }
 
 interface DroneLocationUpdate {

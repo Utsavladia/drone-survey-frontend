@@ -9,7 +9,7 @@ export interface IMissionRun {
   _id: string;
   mission_id: string;
   drone_id: IDrone;
-  status: 'in_progress' | 'completed' | 'failed';
+  status: 'running' | 'completed' | 'failed';
   started_at: string;
   completed_at?: string;
   missionSnapshot: {
