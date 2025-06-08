@@ -8,6 +8,7 @@ import { Box, Button, Typography, CircularProgress, Alert } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import MissionDetailsModal from '../../components/MissionDetailsModal/MissionDetailsModal';
 import RunningMissions from '../../components/RunningMissions/RunningMissions';
+import MissionHistory from '../../components/MissionHistory/MissionHistory';
 import './MissionPlanning.css';
 import { toast } from 'react-toastify';
 
@@ -102,16 +103,16 @@ function MissionPlanning() {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="flex flex-col h-screen overflow-hidden">
       {/* Fixed Header */}
-      <div className="h-16 bg-white border-b border-gray-200 px-4 flex items-center">
+      <div className="flex items-center h-16 px-4 bg-white border-b border-gray-200">
         <Typography variant="h4">Missions</Typography>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         {/* Left Column */}
-        <div className="w-1/2 flex flex-col border-r border-gray-200">
+        <div className="flex flex-col w-1/2 border-r border-gray-200">
           {/* Fixed Header */}
           <div className="bg-white border-b border-gray-200">
             <div className="flex border-b border-gray-200">
@@ -146,19 +147,16 @@ function MissionPlanning() {
               </div>
             ) : (
               <div className="p-4">
-                {/* Add your mission history component here */}
-                <Typography variant="body1" color="text.secondary">
-                  Mission history will be displayed here
-                </Typography>
+                <MissionHistory />
               </div>
             )}
           </div>
         </div>
 
         {/* Right Column - All Missions */}
-        <div className="w-1/2 flex flex-col">
+        <div className="flex flex-col w-1/2">
           {/* Fixed Header */}
-          <div className="bg-white border-b border-gray-200 px-4 py-2 flex justify-between items-center">
+          <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200">
             <Typography variant="h6">All Missions</Typography>
             <Button
               variant="contained"
@@ -178,7 +176,7 @@ function MissionPlanning() {
                 {missions.map((mission) => (
                   <div
                     key={mission._id}
-                    className="mission-card bg-gray-50 p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow"
+                    className="p-4 transition-shadow rounded-lg cursor-pointer mission-card bg-gray-50 hover:shadow-md"
                     onClick={() => handleMissionClick(mission)}
                   >
                     <Typography variant="h6">{mission.name}</Typography>

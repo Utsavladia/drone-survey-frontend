@@ -27,6 +27,21 @@ export const missionRunService = {
     }
   },
 
+  async getCompletedMissions(): Promise<IMissionRun[]> {
+    try {
+      const response = await axios.get<{ success: boolean; data: IMissionRun[] }>(`${API_URL}/missions/history`);
+      if (!response.data.success) {
+        throw new MissionRunServiceError('Failed to fetch completed missions', response.data);
+      }
+      return response.data.data || [];
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new MissionRunServiceError('Failed to fetch completed missions', error.response?.data);
+      }
+      throw error;
+    }
+  },
+
   async startMission(missionId: string, droneId: string): Promise<void> {
     try {
       await axios.post(`${API_BASE_URL}/missions/${missionId}/run`, {
