@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { missionRunService } from '../../services/missionRunService';
 import { IMissionRun } from '../../types/missionRun';
-import MissionRunDetailsModal from '../MissionRunDetailsModal/MissionRunDetailsModal';
+import { MissionRunDetailsModal } from '../MissionRunDetailsModal/MissionRunDetailsModal';
 import './RunningMissions.css';
 
 const RunningMissions: React.FC = () => {

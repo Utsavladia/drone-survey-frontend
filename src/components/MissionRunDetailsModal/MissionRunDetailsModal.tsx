@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -8,11 +8,11 @@ import {
   Box,
   Typography,
   IconButton,
-  Grid,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Map from '../Map';
+import Map from '../Map/Map';
 import { IMissionRun } from '../../types/missionRun';
+import { socketService } from '../../services/socketService';
 import './MissionRunDetailsModal.css';
 
 interface MissionRunDetailsModalProps {
@@ -21,11 +21,46 @@ interface MissionRunDetailsModalProps {
   onClose: () => void;
 }
 
-const MissionRunDetailsModal: React.FC<MissionRunDetailsModalProps> = ({
+interface DroneLocation {
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  heading: number;
+  speed: number;
+  timestamp: Date;
+}
+
+export const MissionRunDetailsModal: React.FC<MissionRunDetailsModalProps> = ({
   missionRun,
   open,
   onClose,
 }) => {
+  const [droneLocation, setDroneLocation] = useState<DroneLocation | null>(null);
+
+  useEffect(() => {
+    if (open && missionRun._id) {
+      console.log('MissionRunDetailsModal: Opening modal for mission:', missionRun._id);
+      
+      // Subscribe to mission updates
+      const unsubscribe = socketService.subscribeToMission(missionRun._id, (location) => {
+        console.log('MissionRunDetailsModal: Received location update:', {
+          missionId: missionRun._id,
+          location: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }
+        });
+        setDroneLocation(location);
+      });
+
+      // Cleanup subscription on unmount
+      return () => {
+        console.log('MissionRunDetailsModal: Cleaning up subscription for mission:', missionRun._id);
+        unsubscribe?.();
+      };
+    }
+  }, [open, missionRun._id]);
+
   return (
     <Dialog
       open={open}
@@ -35,16 +70,21 @@ const MissionRunDetailsModal: React.FC<MissionRunDetailsModalProps> = ({
       className="mission-run-details-modal"
     >
       <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h5">Mission Run Details</Typography>
-          <IconButton onClick={onClose} size="small">
-            <CloseIcon />
-          </IconButton>
-        </Box>
+        Mission Run Details
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
-      <DialogContent dividers>
-        <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' } }}>
-          {/* Map Section */}
+      <DialogContent>
+        <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', md: 'row' } }}>
           <Box sx={{ flex: { md: '1' } }}>
             <Box className="map-container">
               <Map
@@ -52,103 +92,80 @@ const MissionRunDetailsModal: React.FC<MissionRunDetailsModalProps> = ({
                 onWaypointAdd={() => {}}
                 onWaypointRemove={() => {}}
                 isMissionActive={true}
+                currentLocation={droneLocation ? {
+                  latitude: droneLocation.latitude,
+                  longitude: droneLocation.longitude,
+                } : undefined}
               />
             </Box>
           </Box>
-
-          {/* Details Section */}
           <Box sx={{ flex: { md: '1' } }}>
             <Box className="details-container">
-              <Typography variant="h6" gutterBottom>
-                {missionRun.missionSnapshot.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
-                {missionRun.missionSnapshot.description}
-              </Typography>
-
               <Box className="detail-section">
-                <Typography variant="subtitle1" gutterBottom>
-                  Run Information
-                </Typography>
+                <Typography variant="h6">Mission Information</Typography>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Run ID
-                  </Typography>
-                  <Typography variant="body1">{missionRun._id}</Typography>
+                  <Typography variant="subtitle2">Run ID:</Typography>
+                  <Typography>{missionRun._id}</Typography>
                 </Box>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Status
-                  </Typography>
-                  <Typography variant="body1" className="status-running">
+                  <Typography variant="subtitle2">Status:</Typography>
+                  <Typography className={`status-${missionRun.status.toLowerCase()}`}>
                     {missionRun.status}
                   </Typography>
                 </Box>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Started At
-                  </Typography>
-                  <Typography variant="body1">
-                    {new Date(missionRun.started_at).toLocaleString()}
-                  </Typography>
+                  <Typography variant="subtitle2">Start Time:</Typography>
+                  <Typography>{new Date(missionRun.started_at).toLocaleString()}</Typography>
                 </Box>
                 {missionRun.completed_at && (
                   <Box className="detail-item">
-                    <Typography variant="body2" color="text.secondary">
-                      Completed At
-                    </Typography>
-                    <Typography variant="body1">
-                      {new Date(missionRun.completed_at).toLocaleString()}
-                    </Typography>
+                    <Typography variant="subtitle2">Completion Time:</Typography>
+                    <Typography>{new Date(missionRun.completed_at).toLocaleString()}</Typography>
                   </Box>
                 )}
               </Box>
 
               <Box className="detail-section">
-                <Typography variant="subtitle1" gutterBottom>
-                  Drone Information
-                </Typography>
+                <Typography variant="h6">Drone Information</Typography>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Drone Name
-                  </Typography>
-                  <Typography variant="body1">{missionRun.drone_id.name}</Typography>
+                  <Typography variant="subtitle2">Drone Name:</Typography>
+                  <Typography>{missionRun.drone_id.name}</Typography>
                 </Box>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Drone Status
-                  </Typography>
-                  <Typography variant="body1">{missionRun.drone_id.status}</Typography>
+                  <Typography variant="subtitle2">Drone Status:</Typography>
+                  <Typography>{missionRun.drone_id.status}</Typography>
                 </Box>
+                {/* {droneLocation && (
+                  <>
+                    <Box className="detail-item">
+                      <Typography variant="subtitle2">Current Altitude:</Typography>
+                      <Typography>{droneLocation.altitude.toFixed(2)} m</Typography>
+                    </Box>
+                    <Box className="detail-item">
+                      <Typography variant="subtitle2">Current Speed:</Typography>
+                      <Typography>{droneLocation.speed.toFixed(2)} m/s</Typography>
+                    </Box>
+                    <Box className="detail-item">
+                      <Typography variant="subtitle2">Current Heading:</Typography>
+                      <Typography>{droneLocation.heading.toFixed(2)}°</Typography>
+                    </Box>
+                  </>
+                )} */}
               </Box>
 
               <Box className="detail-section">
-                <Typography variant="subtitle1" gutterBottom>
-                  Mission Parameters
-                </Typography>
+                <Typography variant="h6">Mission Parameters</Typography>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Site
-                  </Typography>
-                  <Typography variant="body1">{missionRun.missionSnapshot.site}</Typography>
+                  <Typography variant="subtitle2">Pattern:</Typography>
+                  <Typography>{missionRun.missionSnapshot.pattern}</Typography>
                 </Box>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Pattern
-                  </Typography>
-                  <Typography variant="body1">{missionRun.missionSnapshot.pattern}</Typography>
+                  <Typography variant="subtitle2">Altitude:</Typography>
+                  <Typography>{missionRun.missionSnapshot.parameters.altitude} m</Typography>
                 </Box>
                 <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Altitude
-                  </Typography>
-                  <Typography variant="body1">{missionRun.missionSnapshot.parameters.altitude}m</Typography>
-                </Box>
-                <Box className="detail-item">
-                  <Typography variant="body2" color="text.secondary">
-                    Overlap
-                  </Typography>
-                  <Typography variant="body1">{missionRun.missionSnapshot.parameters.overlap}%</Typography>
+                  <Typography variant="subtitle2">Overlap:</Typography>
+                  <Typography>{missionRun.missionSnapshot.parameters.overlap}%</Typography>
                 </Box>
               </Box>
             </Box>
@@ -160,6 +177,4 @@ const MissionRunDetailsModal: React.FC<MissionRunDetailsModalProps> = ({
       </DialogActions>
     </Dialog>
   );
-};
-
-export default MissionRunDetailsModal; 
+}; 

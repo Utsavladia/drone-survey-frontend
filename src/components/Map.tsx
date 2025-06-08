@@ -18,6 +18,7 @@ interface MapProps {
   onWaypointRemove: (index: number) => void;
   dronePosition?: { lat: number; lng: number; altitude: number };
   isMissionActive?: boolean;
+  currentLocation?: { lat: number; lng: number; altitude: number };
 }
 
 const MapClickHandler: React.FC<{ onWaypointAdd: (waypoint: Waypoint) => void }> = ({ onWaypointAdd }) => {
@@ -37,7 +38,8 @@ const Map: React.FC<MapProps> = ({
   onWaypointAdd, 
   onWaypointRemove,
   dronePosition,
-  isMissionActive 
+  isMissionActive,
+  currentLocation
 }) => {
   // Create drone icon
   const droneIcon = new L.Icon({

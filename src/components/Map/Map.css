@@ -1,0 +1,10 @@
+.drone-marker {
+  background: none;
+  border: none;
+}
+
+.drone-marker div {
+  font-size: 24px;
+  transform-origin: center;
+  transition: transform 0.3s ease;
+} 
