@@ -1,0 +1,40 @@
+.mission-run-details-modal .map-container {
+  height: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.mission-run-details-modal .details-container {
+  padding: 16px;
+}
+
+.mission-run-details-modal .detail-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.mission-run-details-modal .detail-item {
+  margin-bottom: 12px;
+}
+
+.mission-run-details-modal .detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.mission-run-details-modal .status-running {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.mission-run-details-modal .status-completed {
+  color: #2196f3;
+  font-weight: 500;
+}
+
+.mission-run-details-modal .status-failed {
+  color: #f44336;
+  font-weight: 500;
+} 

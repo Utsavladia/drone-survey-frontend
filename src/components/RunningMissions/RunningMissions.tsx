@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { missionRunService } from '../../services/missionRunService';
 import { IMissionRun } from '../../types/missionRun';
+import MissionRunDetailsModal from '../MissionRunDetailsModal/MissionRunDetailsModal';
 import './RunningMissions.css';
 
 const RunningMissions: React.FC = () => {
   const [runningMissions, setRunningMissions] = useState<IMissionRun[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedMission, setSelectedMission] = useState<IMissionRun | null>(null);
 
   useEffect(() => {
     fetchRunningMissions();
@@ -26,6 +28,14 @@ const RunningMissions: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleMissionClick = (mission: IMissionRun) => {
+    setSelectedMission(mission);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMission(null);
   };
 
   if (loading) {
@@ -61,7 +71,9 @@ const RunningMissions: React.FC = () => {
             sx={{
               backgroundColor: '#f0fdf4',
               border: '1px solid #86efac',
+              cursor: 'pointer',
             }}
+            onClick={() => handleMissionClick(missionRun)}
           >
             <Typography variant="h6">{missionRun.missionSnapshot.name}</Typography>
             <Typography variant="body2" color="text.secondary">
@@ -87,6 +99,14 @@ const RunningMissions: React.FC = () => {
           </Box>
         ))}
       </Box>
+
+      {selectedMission && (
+        <MissionRunDetailsModal
+          missionRun={selectedMission}
+          open={!!selectedMission}
+          onClose={handleCloseModal}
+        />
+      )}
     </Box>
   );
 };
