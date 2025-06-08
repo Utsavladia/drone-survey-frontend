@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { IMission } from '../../types/mission';
 import { missionService } from '../../services/missionService';
 import { droneService } from '../../services/droneService';
-import { Box, Button, Typography, CircularProgress, Alert, Snackbar, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { missionRunService } from '../../services/missionRunService';
+import { Box, Button, Typography, CircularProgress, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import MissionDetailsModal from '../../components/MissionDetailsModal/MissionDetailsModal';
+import RunningMissions from '../../components/RunningMissions/RunningMissions';
 import './MissionPlanning.css';
 import { toast } from 'react-toastify';
 
@@ -22,6 +24,7 @@ function MissionPlanning() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMission, setSelectedMission] = useState<IMission | null>(null);
+  const [activeTab, setActiveTab] = useState<'running' | 'history'>('running');
 
   useEffect(() => {
     fetchMissions();
@@ -69,14 +72,13 @@ function MissionPlanning() {
 
   const handleRunMission = async (missionId: string, selectedDrone: string | null) => {
     if (!selectedDrone) {
-      // use toastify to show a notification
       toast.error('Please select a drone to run the mission');
       return;
     }
     try {
-      await missionService.startMission(missionId, selectedDrone);
+      await missionRunService.startMission(missionId, selectedDrone);
       toast.success('Mission started successfully');
-      fetchMissions(); // Refresh the missions list
+      fetchMissions();
       handleCloseModal();
     } catch (err) {
       toast.error('Failed to start mission');
@@ -100,43 +102,106 @@ function MissionPlanning() {
   }
 
   return (
-    <Box className="mission-planning">
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* Fixed Header */}
+      <div className="h-16 bg-white border-b border-gray-200 px-4 flex items-center">
         <Typography variant="h4">Missions</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleCreateMission}
-        >
-          Create Mission
-        </Button>
-      </Box>
+      </div>
 
-      <Box className="missions-grid">
-        {missions.map((mission) => (
-          <Box
-            key={mission._id}
-            className="mission-card"
-            onClick={() => handleMissionClick(mission)}
-          >
-            <Typography variant="h6">{mission.name}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {mission.description}
-            </Typography>
-            <Box mt={1}>
-              <Typography variant="body2">
-                Status: <span className={`status-${mission.status}`}>{mission.status}</span>
-              </Typography>
-              <Typography variant="body2">Site: {mission.site}</Typography>
-              <Typography variant="body2">Pattern: {mission.pattern}</Typography>
-              <Typography variant="body2">
-                Created: {new Date(mission.createdAt).toLocaleDateString()}
-              </Typography>
-            </Box>
-          </Box>
-        ))}
-      </Box>
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Column */}
+        <div className="w-1/2 flex flex-col border-r border-gray-200">
+          {/* Fixed Header */}
+          <div className="bg-white border-b border-gray-200">
+            <div className="flex border-b border-gray-200">
+              <button
+                className={`px-4 py-2 font-medium text-sm ${
+                  activeTab === 'running'
+                    ? 'border-b-2 border-blue-500 text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+                onClick={() => setActiveTab('running')}
+              >
+                Running Missions
+              </button>
+              <button
+                className={`px-4 py-2 font-medium text-sm ${
+                  activeTab === 'history'
+                    ? 'border-b-2 border-blue-500 text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+                onClick={() => setActiveTab('history')}
+              >
+                Mission History
+              </button>
+            </div>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto">
+            {activeTab === 'running' ? (
+              <div className="p-4">
+                <RunningMissions />
+              </div>
+            ) : (
+              <div className="p-4">
+                {/* Add your mission history component here */}
+                <Typography variant="body1" color="text.secondary">
+                  Mission history will be displayed here
+                </Typography>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column - All Missions */}
+        <div className="w-1/2 flex flex-col">
+          {/* Fixed Header */}
+          <div className="bg-white border-b border-gray-200 px-4 py-2 flex justify-between items-center">
+            <Typography variant="h6">All Missions</Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleCreateMission}
+              size="small"
+            >
+              Create Mission
+            </Button>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-4">
+              <div className="flex flex-col gap-4">
+                {missions.map((mission) => (
+                  <div
+                    key={mission._id}
+                    className="mission-card bg-gray-50 p-4 rounded-lg cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => handleMissionClick(mission)}
+                  >
+                    <Typography variant="h6">{mission.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {mission.description}
+                    </Typography>
+                    <div className="mt-2">
+                      <Typography variant="body2">
+                        Status: <span className={`status-${mission.status}`}>{mission.status}</span>
+                      </Typography>
+                      <Typography variant="body2">Site: {mission.site}</Typography>
+                      <Typography variant="body2">Pattern: {mission.pattern}</Typography>
+                      <Typography variant="body2">
+                        Created: {new Date(mission.createdAt).toLocaleDateString()}
+                      </Typography>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {selectedMission && (
         <MissionDetailsModal
@@ -148,7 +213,7 @@ function MissionPlanning() {
           drones={drones}
         />
       )}
-    </Box>
+    </div>
   );
 }
 
