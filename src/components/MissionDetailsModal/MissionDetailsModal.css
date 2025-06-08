@@ -1,0 +1,57 @@
+.mission-details-modal {
+  .MuiDialog-paper {
+    min-height: 80vh;
+  }
+}
+
+.map-container {
+  height: 800px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mission-details {
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  height: 100%;
+}
+
+.parameters-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.status-chip {
+  &.status-planned {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+
+  &.status-in-progress {
+    background-color: #fff3e0;
+    color: #f57c00;
+  }
+
+  &.status-completed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.status-aborted {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+
+  &.status-paused {
+    background-color: #f5f5f5;
+    color: #616161;
+  }
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+} 

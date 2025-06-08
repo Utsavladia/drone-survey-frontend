@@ -2,19 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IMission } from '../../types/mission';
 import { missionService } from '../../services/missionService';
-import { Box, Button, Typography, CircularProgress, Alert, Snackbar } from '@mui/material';
+import { droneService } from '../../services/droneService';
+import { Box, Button, Typography, CircularProgress, Alert, Snackbar, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import MissionDetailsModal from '../../components/MissionDetailsModal/MissionDetailsModal';
 import './MissionPlanning.css';
+import { toast } from 'react-toastify';
+
+interface IDrone {
+  _id: string;
+  name: string;
+  status: string;
+}
 
 function MissionPlanning() {
   const navigate = useNavigate();
   const [missions, setMissions] = useState<IMission[]>([]);
+  const [drones, setDrones] = useState<IDrone[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [selectedMission, setSelectedMission] = useState<IMission | null>(null);
 
   useEffect(() => {
     fetchMissions();
+    fetchAvailableDrones();
   }, []);
 
   const fetchMissions = async () => {
@@ -31,12 +42,45 @@ function MissionPlanning() {
     }
   };
 
+  const fetchAvailableDrones = async () => {
+    try {
+      const data = await droneService.getAvailableDrones();
+      setDrones(data);
+    } catch (err) {
+      console.error('Error loading drones:', err);
+    }
+  };
+
   const handleCreateMission = () => {
     navigate('/missions/create');
   };
 
-  const handleMissionClick = (missionId: string) => {
-    navigate(`/missions/${missionId}`);
+  const handleMissionClick = (mission: IMission) => {
+    setSelectedMission(mission);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMission(null);
+  };
+
+  const handleEditMission = (missionId: string) => {
+    navigate(`/missions/${missionId}/edit`);
+  };
+
+  const handleRunMission = async (missionId: string, selectedDrone: string | null) => {
+    if (!selectedDrone) {
+      // use toastify to show a notification
+      toast.error('Please select a drone to run the mission');
+      return;
+    }
+    try {
+      await missionService.startMission(missionId, selectedDrone);
+      toast.success('Mission started successfully');
+      fetchMissions(); // Refresh the missions list
+      handleCloseModal();
+    } catch (err) {
+      toast.error('Failed to start mission');
+    }
   };
 
   if (loading) {
@@ -69,28 +113,12 @@ function MissionPlanning() {
         </Button>
       </Box>
 
-      {notification && (
-        <Snackbar
-          open={!!notification}
-          autoHideDuration={6000}
-          onClose={() => setNotification(null)}
-        >
-          <Alert
-            onClose={() => setNotification(null)}
-            severity={notification.type}
-            sx={{ width: '100%' }}
-          >
-            {notification.message}
-          </Alert>
-        </Snackbar>
-      )}
-
       <Box className="missions-grid">
         {missions.map((mission) => (
           <Box
             key={mission._id}
             className="mission-card"
-            onClick={() => handleMissionClick(mission._id)}
+            onClick={() => handleMissionClick(mission)}
           >
             <Typography variant="h6">{mission.name}</Typography>
             <Typography variant="body2" color="text.secondary">
@@ -109,6 +137,17 @@ function MissionPlanning() {
           </Box>
         ))}
       </Box>
+
+      {selectedMission && (
+        <MissionDetailsModal
+          mission={selectedMission}
+          open={!!selectedMission}
+          onClose={handleCloseModal}
+          onEdit={handleEditMission}
+          onRun={handleRunMission}
+          drones={drones}
+        />
+      )}
     </Box>
   );
 }

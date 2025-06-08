@@ -76,9 +76,11 @@ export const missionService = {
     await axios.delete(`${API_URL}/api/missions/${id}`);
   },
 
-  async startMission(id: string): Promise<void> {
+  async startMission(missionId: string, droneId: string): Promise<void> {
     try {
-      await axios.post(`${API_URL}/api/missions/${id}/start`);
+      await axios.post(`${API_BASE_URL}/missions/${missionId}/run`, {
+        droneId
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new MissionServiceError('Failed to start mission', error.response?.data);

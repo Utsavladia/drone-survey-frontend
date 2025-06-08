@@ -1,0 +1,28 @@
+.mission-form {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.mission-form .MuiCard-root {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mission-form .MuiTypography-h5 {
+  margin-bottom: 24px;
+}
+
+.mission-form .MuiStack-root {
+  height: 100%;
+}
+
+.mission-form .MuiTextField-root,
+.mission-form .MuiFormControl-root {
+  margin-bottom: 16px;
+}
+
+.mission-form .map-container {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} 

@@ -23,6 +23,18 @@ class DroneService {
   async deleteDrone(id: string) {
     return axios.delete(`${API_URL}/drones/${id}`);
   }
+
+  async getAvailableDrones(): Promise<Drone[]> {
+    try {
+      const response = await axios.get<Drone[]>(`${API_URL}/drones/available`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error('Failed to fetch available drones');
+      }
+      throw error;
+    }
+  }
 }
 
 export const droneService = new DroneService(); 

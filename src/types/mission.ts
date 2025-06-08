@@ -31,7 +31,7 @@ export interface IMission {
     frequency: number;
     sensors: string[];
   };
-  drone: IDrone;
+  assignedDrone: string;
   createdAt: Date;
   updatedAt: Date;
 }

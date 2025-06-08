@@ -12,6 +12,7 @@ import MissionPlanning from './pages/MissionPlanning/MissionPlanning';
 import Reports from './pages/Reports/Reports';
 import Navigation from './components/Navigation/Navigation';
 import CreateMission from './pages/MissionPlanning/CreateMission';
+import EditMission from './pages/MissionPlanning/EditMission';
 import './App.css';
 
 // Create a theme instance
@@ -41,6 +42,7 @@ const App = () => {
                 <Route path="/drones" element={<Drones />} />
                 <Route path="/missions" element={<MissionPlanning />} />
                 <Route path="/missions/create" element={<CreateMission />} />
+                <Route path="/missions/:id/edit" element={<EditMission />} />
                 <Route path="/reports" element={<Reports />} />
               </Routes>
             </Box>
@@ -48,7 +50,7 @@ const App = () => {
           <ToastContainer
             position="top-center"
             autoClose={3000}
-            hideProgressBar={false}
+            hideProgressBar={true}
             newestOnTop
             closeOnClick
             rtl={false}
@@ -56,6 +58,7 @@ const App = () => {
             draggable
             pauseOnHover
             theme="light"
+            style={{height: '50px'}}
           />
         </Router>
       </ThemeProvider>
