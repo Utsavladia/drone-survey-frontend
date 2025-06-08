@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Chip } from '@mui/material';
 import { missionRunService } from '../../services/missionRunService';
 import { IMissionRun } from '../../types/missionRun';
-import './MissionHistory.css';
+import { getTimeAgo } from '../../utils/timeUtils';
 
 const MissionHistory: React.FC = () => {
   const [completedMissions, setCompletedMissions] = useState<IMissionRun[]>([]);
@@ -25,6 +25,28 @@ const MissionHistory: React.FC = () => {
       setCompletedMissions([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'success';
+      case 'failed':
+        return 'error';
+      default:
+        return 'default';
+    }
+  };
+
+  const getStatusBackground = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'bg-blue-50 border-blue-200 hover:bg-blue-100';
+      case 'failed':
+        return 'bg-red-50 border-red-200 hover:bg-red-100';
+      default:
+        return 'bg-gray-50 border-gray-200 hover:bg-gray-100';
     }
   };
 
@@ -55,47 +77,51 @@ const MissionHistory: React.FC = () => {
   }
 
   return (
-    <Box mb={4}>
-      <Typography variant="h5" gutterBottom>
-        Mission History
-      </Typography>
-      <Box className="mission-history-grid">
+    <Box>
+      <div className="grid grid-cols-1 gap-4">
         {completedMissions.map((missionRun) => (
-          <Box
+          <div
             key={missionRun._id}
-            className="mission-card completed"
-            sx={{
-              backgroundColor: '#f8fafc',
-              border: '1px solid #e2e8f0',
-            }}
+            className={`p-4 transition-colors duration-200 border rounded-lg ${getStatusBackground(missionRun.status)}`}
           >
-            <Typography variant="h6">{missionRun.missionSnapshot.name}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {missionRun.missionSnapshot.description}
-            </Typography>
-            <Box mt={1}>
-              <Typography variant="body2">
-                Status: <span className="status-completed">Completed</span>
-              </Typography>
-              <Typography variant="body2">
-                Started: {new Date(missionRun.started_at).toLocaleString()}
-              </Typography>
-              <Typography variant="body2">
-                Completed: {missionRun.completed_at ? new Date(missionRun.completed_at).toLocaleString() : 'N/A'}
-              </Typography>
-              <Typography variant="body2">
-                Drone: {missionRun.drone_id.name}
-              </Typography>
-              <Typography variant="body2">
-                Site: {missionRun.missionSnapshot.site}
-              </Typography>
-              <Typography variant="body2">
-                Pattern: {missionRun.missionSnapshot.pattern}
-              </Typography>
-            </Box>
-          </Box>
+            <div className="flex justify-between">
+              {/* Left side content */}
+              <div className="flex-1">
+                <Typography variant="h5" className="font-bold text-gray-900">
+                  {missionRun.missionSnapshot.name}
+                </Typography>
+                <Typography variant="body2" className="mt-1 text-gray-600">
+                  {missionRun.missionSnapshot.description}
+                </Typography>
+                <div className="flex items-center mt-2 text-gray-600">
+                  <img src="/drone1.png" alt="Drone" className="w-8 h-8 mr-1" />
+                  <Typography variant="body2">
+                    {missionRun.drone_id.name}
+                  </Typography>
+                </div>
+              </div>
+
+              {/* Right side content */}
+              <div className="flex flex-col items-end justify-between">
+                <Chip
+                  label={missionRun.status}
+                  color={getStatusColor(missionRun.status)}
+                  size="small"
+                  className="mb-2 capitalize"
+                />
+                <div className="flex flex-col items-end">
+                  <Typography variant="body2" className="text-gray-600">
+                    {getTimeAgo(missionRun.started_at)}
+                  </Typography>
+                  <Typography variant="body2" className="mt-1 text-gray-600">
+                    {missionRun.missionSnapshot.site}
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
-      </Box>
+      </div>
     </Box>
   );
 };

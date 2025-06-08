@@ -19,6 +19,7 @@ interface DroneLocation {
   heading: number;
   speed: number;
   timestamp: Date;
+  batteryLevel: number;
 }
 
 interface MapProps {
@@ -30,6 +31,7 @@ interface MapProps {
     latitude: number;
     longitude: number;
     heading?: number;
+    batteryLevel?: number;
   } | null;
 }
 
@@ -132,6 +134,8 @@ const Map = ({
             Current Location
             <br />
             Heading: {currentLocation.heading || 0}°
+            <br />
+            Battery: {currentLocation.batteryLevel?.toFixed(1) || 'N/A'}%
           </Popup>
         </Marker>
       )}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Chip } from '@mui/material';
 import { missionRunService } from '../../services/missionRunService';
 import { IMissionRun } from '../../types/missionRun';
 import { MissionRunDetailsModal } from '../MissionRunDetailsModal/MissionRunDetailsModal';
-import './RunningMissions.css';
+import { getTimeAgo } from '../../utils/timeUtils';
 
 const RunningMissions: React.FC = () => {
   const [runningMissions, setRunningMissions] = useState<IMissionRun[]>([]);
@@ -59,46 +59,52 @@ const RunningMissions: React.FC = () => {
   }
 
   return (
-    <Box mb={4}>
-      <Typography variant="h5" gutterBottom>
-        Running Missions
-      </Typography>
-      <Box className="running-missions-grid">
+    <Box>
+      <div className="grid grid-cols-1 gap-4">
         {runningMissions.map((missionRun) => (
-          <Box
+          <div
             key={missionRun._id}
-            className="mission-card running"
-            sx={{
-              backgroundColor: '#f0fdf4',
-              border: '1px solid #86efac',
-              cursor: 'pointer',
-            }}
+            className="p-4 transition-colors duration-200 border border-green-200 rounded-lg cursor-pointer bg-green-50 hover:bg-green-100"
             onClick={() => handleMissionClick(missionRun)}
           >
-            <Typography variant="h6">{missionRun.missionSnapshot.name}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {missionRun.missionSnapshot.description}
-            </Typography>
-            <Box mt={1}>
-              <Typography variant="body2">
-                Status: <span className="status-running">Running</span>
-              </Typography>
-              <Typography variant="body2">
-                Started: {new Date(missionRun.started_at).toLocaleString()}
-              </Typography>
-              <Typography variant="body2">
-                Drone: {missionRun.drone_id.name}
-              </Typography>
-              <Typography variant="body2">
-                Site: {missionRun.missionSnapshot.site}
-              </Typography>
-              <Typography variant="body2">
-                Pattern: {missionRun.missionSnapshot.pattern}
-              </Typography>
-            </Box>
-          </Box>
+            <div className="flex justify-between">
+              {/* Left side content */}
+              <div className="flex-1">
+                <Typography variant="h5" className="font-bold text-gray-900">
+                  {missionRun.missionSnapshot.name}
+                </Typography>
+                <Typography variant="body2" className="mt-1 text-gray-600">
+                  {missionRun.missionSnapshot.description}
+                </Typography>
+                <div className="flex items-center mt-2 text-gray-600">
+                  <img src="/drone1.png" alt="Drone" className="w-8 h-8 mr-1" />
+                  <Typography variant="body2">
+                    {missionRun.drone_id.name}
+                  </Typography>
+                </div>
+              </div>
+
+              {/* Right side content */}
+              <div className="flex flex-col items-end justify-between ">
+                <Chip
+                  label="Running"
+                  color="success"
+                  size="small"
+                  className="mb-2"
+                />
+                <div className="flex flex-col items-end">
+                <Typography variant="body2" className="text-gray-600">
+                  {getTimeAgo(missionRun.started_at)}
+                </Typography>
+                <Typography variant="body2" className="mt-1 text-gray-600">
+                    {missionRun.missionSnapshot.site}
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
-      </Box>
+      </div>
 
       {selectedMission && (
         <MissionRunDetailsModal

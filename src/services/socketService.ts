@@ -1,13 +1,14 @@
 import { Socket } from 'socket.io-client';
 import io from 'socket.io-client';
 
-interface DroneLocation {
+export interface DroneLocation {
   latitude: number;
   longitude: number;
   altitude: number;
   heading: number;
   speed: number;
   timestamp: Date;
+  batteryLevel: number;
 }
 
 interface DroneLocationUpdate {

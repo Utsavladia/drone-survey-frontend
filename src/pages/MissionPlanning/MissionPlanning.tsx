@@ -106,16 +106,15 @@ function MissionPlanning() {
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Fixed Header */}
       <div className="flex items-center h-16 px-4 bg-white border-b border-gray-200">
-        <Typography variant="h4">Missions</Typography>
+        <p className="text-4xl font-semibold">Missions</p>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 gap-4 overflow-hidden">
         {/* Left Column */}
-        <div className="flex flex-col w-1/2 border-r border-gray-200">
+        <div className="flex flex-col w-1/2 ">
           {/* Fixed Header */}
-          <div className="bg-white border-b border-gray-200">
-            <div className="flex border-b border-gray-200">
+            <div className="flex h-12 border-b border-gray-200">
               <button
                 className={`px-4 py-2 font-medium text-sm ${
                   activeTab === 'running'
@@ -136,17 +135,16 @@ function MissionPlanning() {
               >
                 Mission History
               </button>
-            </div>
           </div>
 
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto">
             {activeTab === 'running' ? (
-              <div className="p-4">
+              <div className="px-4 py-8">
                 <RunningMissions />
               </div>
             ) : (
-              <div className="p-4">
+              <div className="px-4 py-8">
                 <MissionHistory />
               </div>
             )}
