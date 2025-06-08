@@ -47,11 +47,9 @@ const MissionDetailsModal: React.FC<MissionDetailsModalProps> = ({
   const [selectedDrone, setSelectedDrone] = useState<string | null>(null);
 
   useEffect(() => {
-    // If mission has an assigned drone and it's available in drones list, use it
     if (mission?.assignedDrone && drones.some(drone => String(drone._id) === String(mission.assignedDrone))) {
       setSelectedDrone(String(mission.assignedDrone));
     } else {
-      // If no assigned drone or it's not available, set to null
       setSelectedDrone(null);
     }
   }, [mission, drones]);
@@ -70,154 +68,142 @@ const MissionDetailsModal: React.FC<MissionDetailsModalProps> = ({
       fullWidth
       className="mission-details-modal"
     >
-      <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h5">{mission.name}</Typography>
-          <IconButton onClick={onClose} size="small">
+      <DialogTitle className="border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-gray-900">{mission.name}</h2>
+          <IconButton onClick={onClose} size="small" className="text-gray-500 hover:text-gray-700">
             <CloseIcon />
           </IconButton>
-        </Box>
+        </div>
       </DialogTitle>
 
-      <DialogContent dividers>
-        <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' } }}>
+      <DialogContent className="p-4">
+        <div className="flex flex-col gap-6 md:flex-row">
           {/* Map Section */}
-          <Box sx={{ flex: { md: '2' } }}>
-            <Box className="map-container">
+          <div className="flex-1">
+            <div className="h-[480px] rounded-lg overflow-hidden border border-gray-200 shadow-sm">
               <Map
                 waypoints={mission.flightPath}
                 onWaypointAdd={() => {}}
                 onWaypointRemove={() => {}}
                 isMissionActive={false}
               />
-            </Box>
-          </Box>
+            </div>
+          </div>
 
           {/* Mission Details Section */}
-          <Box sx={{ flex: { md: '1' } }}>
-            <Box className="mission-details">
-              <Typography variant="h6" gutterBottom>
-                Mission Details
-              </Typography>
+          <div className="flex-1 space-y-6">
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Mission Details</h3>
 
-              <Box mb={2} display="flex" alignItems="center" gap={2}>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Description
-                </Typography>
-                <Typography variant="body1">{mission.description}</Typography>
-              </Box>
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <span className="w-24 text-sm font-medium text-gray-500">Description</span>
+                  <p className="flex-1 text-sm text-gray-900">{mission.description}</p>
+                </div>
 
-              <Box mb={2} display="flex" alignItems="center" gap={2}>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Status
-                </Typography>
-                <Chip
-                  label={mission.status}
-                  className={`status-chip status-${mission.status}`}
-                  size="small"
-                />
-              </Box>
+                <div className="flex items-center gap-4">
+                  <span className="w-24 text-sm font-medium text-gray-500">Status</span>
+                  <Chip
+                    label={mission.status}
+                    className={`status-chip status-${mission.status} text-xs font-medium px-2 py-1 rounded-full`}
+                    size="small"
+                  />
+                </div>
 
-              <Box mb={2} display="flex" alignItems="center" gap={2}>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Site
-                </Typography>
-                <Typography variant="body1">{mission.site}</Typography>
-              </Box>
+                <div className="flex items-center gap-4">
+                  <span className="w-24 text-sm font-medium text-gray-500">Site</span>
+                  <p className="text-sm text-gray-900">{mission.site}</p>
+                </div>
 
-              <Box mb={2} display="flex" alignItems="center" gap={2}>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Pattern
-                </Typography>
-                <Typography variant="body1" className="text-capitalize">
-                  {mission.pattern}
-                </Typography>
-              </Box>
+                <div className="flex items-center gap-4">
+                  <span className="w-24 text-sm font-medium text-gray-500">Pattern</span>
+                  <p className="text-sm text-gray-900 capitalize">{mission.pattern}</p>
+                </div>
 
-              <Box mb={2}>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Parameters
-                </Typography>
-                <Box className="parameters-grid" display="flex" alignItems="center" gap={6}>
-                  <Box>
-                    <Typography variant="caption" color="textSecondary">
-                      Altitude
-                    </Typography>
-                    <Typography variant="body2">{mission.parameters.altitude}m</Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="caption" color="textSecondary">
-                      Overlap
-                    </Typography>
-                    <Typography variant="body2">{mission.parameters.overlap}%</Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="caption" color="textSecondary">
-                      Frequency
-                    </Typography>
-                    <Typography variant="body2">{mission.parameters.frequency}Hz</Typography>
-                  </Box>
-                </Box>
-              </Box>
+                <div className="space-y-2">
+                  <span className="block text-sm font-medium text-gray-500">Parameters</span>
+                  <div className="grid grid-cols-3 gap-4 p-4 rounded-lg bg-gray-50">
+                    <div>
+                      <p className="text-xs text-gray-500">Altitude</p>
+                      <p className="text-sm font-medium text-gray-900">{mission.parameters.altitude}m</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Overlap</p>
+                      <p className="text-sm font-medium text-gray-900">{mission.parameters.overlap}%</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Frequency</p>
+                      <p className="text-sm font-medium text-gray-900">{mission.parameters.frequency}Hz</p>
+                    </div>
+                  </div>
+                </div>
 
-              <Box mb={2} display="flex" alignItems="center" gap={2}>
-                <Typography variant="subtitle2" color="textSecondary">
-                  Sensors
-                </Typography>
-                <Box display="flex" gap={1} flexWrap="wrap">
-                  {mission.parameters.sensors.map((sensor) => (
-                    <Chip key={sensor} label={sensor} size="small" />
-                  ))}
-                </Box>
-              </Box>
+                <div className="space-y-2">
+                  <span className="block text-sm font-medium text-gray-500">Sensors</span>
+                  <div className="flex flex-wrap gap-2">
+                    {mission.parameters.sensors.map((sensor) => (
+                      <Chip
+                        key={sensor}
+                        label={sensor}
+                        size="small"
+                        className="text-xs font-medium text-blue-700 bg-blue-50"
+                      />
+                    ))}
+                  </div>
+                </div>
 
-              {mission.status === 'planned' && (
-                <Box mb={2}>
-                  <FormControl fullWidth>
-                    {isAssignedDroneAvailable ? (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2">
-                          {drones.find(drone => String(drone._id) === String(mission.assignedDrone))?.name}
-                        </Typography>
-                        <Chip
-                          label="Available" 
-                          size="small"
-                          color="success"
-                        />
-                      </Box>
-                    ) : (
-                      <>
-                        <InputLabel id="drone-select-label">Select Drone</InputLabel>
-                        <Select
-                          labelId="drone-select-label"
-                          value={selectedDrone || ''}
-                          label="Select Drone"
-                          onChange={(e) => handleDroneSelect(e.target.value)}
-                        >
-                          {drones.map((drone) => (
-                            <MenuItem key={drone._id} value={drone._id}>
-                              {drone.name} ({drone.status})
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {!selectedDrone && <Typography variant="body2" color="error" sx={{ my: 1 }}>
-                          Assigned drone is not available. Please select from available drones to run this mission:
-                        </Typography>}
-                      </>
-                    )}
-                  </FormControl>
-                </Box>
-              )}
-            </Box>
-          </Box>
-        </Box>
+                {mission.status === 'planned' && (
+                  <div className="space-y-2">
+                    <span className="block text-sm font-medium text-gray-500">Drone Assignment</span>
+                    <FormControl fullWidth>
+                      {isAssignedDroneAvailable ? (
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50">
+                          <span className="text-sm font-medium text-green-800">
+                            {drones.find(drone => String(drone._id) === String(mission.assignedDrone))?.name}
+                          </span>
+                          <Chip
+                            label="Available"
+                            size="small"
+                            className="text-green-800 bg-green-100"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex space-x-4">
+                          <Select
+                            value={selectedDrone || ''}
+                            onChange={(e) => handleDroneSelect(e.target.value)}
+                            className="bg-white"
+                            size="small"
+                          >
+                            {drones.map((drone) => (
+                              <MenuItem key={drone._id} value={drone._id}>
+                                {drone.name} ({drone.status})
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {!selectedDrone && (
+                            <p className="text-sm text-red-600">
+                              Assigned drone is not available. Please select from available drones to run this mission.
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </FormControl>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions className="px-6 py-8 border-gray-200 bg-gray-50">
         <Button
           startIcon={<EditIcon />}
           onClick={() => onEdit(mission._id)}
           variant="outlined"
+          className="text-gray-700 border-gray-300 hover:bg-gray-50"
         >
           Edit Mission
         </Button>
@@ -227,6 +213,7 @@ const MissionDetailsModal: React.FC<MissionDetailsModalProps> = ({
           variant="contained"
           color="primary"
           disabled={mission.status !== 'planned' || (!selectedDrone && !isAssignedDroneAvailable)}
+          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300"
         >
           Run Mission
         </Button>

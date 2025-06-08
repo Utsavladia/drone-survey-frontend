@@ -102,54 +102,210 @@ const Drones = () => {
   }
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4">Drone Fleet</Typography>
+    <Box sx={{ p: 2 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} borderBottom="1px solid #e0e0e0" pb={2}>
+        <p className="text-2xl font-semibold text-gray-800">Drone Fleet</p>
         <Button variant="contained" color="primary" onClick={handleAddDrone}>
           Add New Drone
         </Button>
       </Box>
 
-      <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
-        {drones.map((drone) => (
-          <Box key={drone._id} sx={{ width: { xs: '100%', sm: 'calc(50% - 12px)', md: 'calc(33.33% - 16px)' } }}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                  <Typography variant="h6">{drone.name}</Typography>
-                  <Chip
-                    label={drone.status}
-                    color={getStatusColor(drone.status) as any}
-                    size="small"
-                  />
-                </Box>
-                <Typography color="textSecondary" gutterBottom>
-                  Model: {drone.droneModel}
-                </Typography>
-                <Box display="flex" alignItems="center" gap={1}>
-                  {getBatteryIcon(drone.batteryLevel)}
-                  <Typography variant="body2">
-                    Battery: {drone.batteryLevel}%
-                  </Typography>
-                </Box>
-                <Typography variant="body2" color="textSecondary">
-                  Last Active: {new Date(drone.lastActive).toLocaleString()}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" color="primary" onClick={() => handleEditDrone(drone)}>
-                  Edit
-                </Button>
-                {drone.status === 'available' && (
-                  <Button size="small" color="primary">
-                    Start Mission
-                  </Button>
-                )}
-              </CardActions>
-            </Card>
-          </Box>
-        ))}
-      </Stack>
+      <Box display="flex" gap={3}>
+        {/* Available Drones */}
+        <Box flex={1}>
+          <Typography variant="h6" color="success.main" gutterBottom>
+            Available
+          </Typography>
+          <Stack spacing={2}>
+            {drones
+              .filter(drone => drone.status === 'available')
+              .map((drone) => (
+                <Card key={drone._id}>
+                  <CardContent>
+                    <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {drone.name}
+                        </Typography>
+                        <Typography color="textSecondary" sx={{ mb: 2 }}>
+                          Model: {drone.droneModel}
+                        </Typography>
+                      </Box>
+                      <img 
+                        src="/drone1.png"
+                        alt="Drone" 
+                        style={{ 
+                          width: '80px', 
+                          height: '80px',
+                          objectFit: 'contain'
+                        }} 
+                      />
+                    </Box>
+
+                    <Box sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'flex-end',
+                      mt: 'auto'
+                    }}>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {getBatteryIcon(drone.batteryLevel)}
+                        <Typography variant="h6" color="primary">
+                          {drone.batteryLevel}%
+                        </Typography>
+                      </Box>
+                      <Chip
+                        label={drone.status}
+                        color={getStatusColor(drone.status) as any}
+                        size="small"
+                      />
+                    </Box>
+                  </CardContent>
+                  <CardActions>
+                    <Button 
+                      size="small" 
+                      color="primary" 
+                      onClick={() => handleEditDrone(drone)}
+                      sx={{ ml: 'auto' }}
+                    >
+                      Edit
+                    </Button>
+                  </CardActions>
+                </Card>
+              ))}
+          </Stack>
+        </Box>
+
+        {/* In Mission Drones */}
+        <Box flex={1}>
+          <Typography variant="h6" color="primary.main" gutterBottom>
+            In Mission
+          </Typography>
+          <Stack spacing={2}>
+            {drones
+              .filter(drone => drone.status === 'in-mission')
+              .map((drone) => (
+                <Card key={drone._id}>
+                  <CardContent>
+                    <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {drone.name}
+                        </Typography>
+                        <Typography color="textSecondary" sx={{ mb: 2 }}>
+                          Model: {drone.droneModel}
+                        </Typography>
+                      </Box>
+                      <img 
+                        src="/mission.png"
+                        alt="Drone" 
+                        style={{ 
+                          width: '50px', 
+                          height: '50px',
+                          objectFit: 'contain'
+                        }} 
+                      />
+                    </Box>
+
+                    <Box sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'flex-end',
+                      mt: 'auto'
+                    }}>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {getBatteryIcon(drone.batteryLevel)}
+                        <Typography variant="h6" color="primary">
+                          {drone.batteryLevel}%
+                        </Typography>
+                      </Box>
+                      <Chip
+                        label={drone.status}
+                        color={getStatusColor(drone.status) as any}
+                        size="small"
+                      />
+                    </Box>
+                  </CardContent>
+                  <CardActions>
+                    <Button 
+                      size="small" 
+                      color="primary" 
+                      onClick={() => handleEditDrone(drone)}
+                      sx={{ ml: 'auto' }}
+                    >
+                      Edit
+                    </Button>
+                  </CardActions>
+                </Card>
+              ))}
+          </Stack>
+        </Box>
+
+        {/* Charging & Maintenance Drones */}
+        <Box flex={1}>
+          <Typography variant="h6" color="warning.main" gutterBottom>
+            Charging & Maintenance
+          </Typography>
+          <Stack spacing={2}>
+            {drones
+              .filter(drone => drone.status === 'charging' || drone.status === 'maintenance')
+              .map((drone) => (
+                <Card key={drone._id}>
+                  <CardContent>
+                    <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {drone.name}
+                        </Typography>
+                        <Typography color="textSecondary" sx={{ mb: 2 }}>
+                          Model: {drone.droneModel}
+                        </Typography>
+                      </Box>
+                      <img 
+                        src={drone.status === 'charging' ? "/charging.png" : "/maintenance.png"}
+                        alt="Drone" 
+                        style={{ 
+                          width: '60px', 
+                          height: '40px',
+                          objectFit: 'contain'
+                        }} 
+                      />
+                    </Box>
+
+                    <Box sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'flex-end',
+                      mt: 'auto'
+                    }}>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {getBatteryIcon(drone.batteryLevel)}
+                        <Typography variant="h6" color="primary">
+                          {drone.batteryLevel}%
+                        </Typography>
+                      </Box>
+                      <Chip
+                        label={drone.status}
+                        color={getStatusColor(drone.status) as any}
+                        size="small"
+                      />
+                    </Box>
+                  </CardContent>
+                  <CardActions>
+                    <Button 
+                      size="small" 
+                      color="primary" 
+                      onClick={() => handleEditDrone(drone)}
+                      sx={{ ml: 'auto' }}
+                    >
+                      Edit
+                    </Button>
+                  </CardActions>
+                </Card>
+              ))}
+          </Stack>
+        </Box>
+      </Box>
 
       <DroneDialog
         open={dialogOpen}

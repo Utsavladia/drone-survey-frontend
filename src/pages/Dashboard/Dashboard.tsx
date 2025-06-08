@@ -118,101 +118,188 @@ const Dashboard: React.FC = () => {
   const averageBatteryLevel = drones.reduce((acc, drone) => acc + drone.batteryLevel, 0) / drones.length;
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3 }}>Dashboard</Typography>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3 }}>Dashboard</Typography>
 
       <Box sx={{ display: 'flex', gap: 3 }}>
         {/* Left Column */}
-        <Box sx={{ flex: 1 }}>
-          {/* Stats Overview */}
-          <Paper sx={{ p: 2, mb: 3 }}>
-            <Typography variant="h6" gutterBottom>Fleet Overview</Typography>
-            <Stack direction="row" spacing={4} justifyContent="space-between">
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">Total Drones</Typography>
-                <Typography variant="h4">{totalDrones}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">Active Drones</Typography>
-                <Typography variant="h4">{activeDrones}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">In Maintenance</Typography>
-                <Typography variant="h4">{maintenanceDrones}</Typography>
-              </Box>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">Low Battery</Typography>
-                <Typography variant="h4">{lowBatteryDrones}</Typography>
-              </Box>
-            </Stack>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Battery Status */}
+          <Paper sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            height: '40vh'
+          }}>
+            <Box sx={{ 
+              p: 2, 
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+              position: 'sticky',
+              top: 0,
+              zIndex: 1
+            }}>
+              <Typography variant="h6">Battery Status</Typography>
+            </Box>
+            <Box sx={{ 
+              p: 2, 
+              overflow: 'auto',
+              flex: 1
+            }}>
+              <Stack spacing={2}>
+                {drones.map((drone) => (
+                  <Box key={drone._id}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
+                      <Typography variant="subtitle2">{drone.name}</Typography>
+                      <Typography variant="body2">{drone.batteryLevel}%</Typography>
+                    </Stack>
+                    <Box sx={{ 
+                      width: '100%', 
+                      height: 8, 
+                      bgcolor: 'grey.200',
+                      borderRadius: 1,
+                      overflow: 'hidden'
+                    }}>
+                      <Box sx={{ 
+                        width: `${drone.batteryLevel}%`, 
+                        height: '100%', 
+                        bgcolor: drone.batteryLevel < 20 ? 'error.main' : 
+                                drone.batteryLevel < 50 ? 'warning.main' : 'success.main'
+                      }} />
+                    </Box>
+                  </Box>
+                ))}
+              </Stack>
+            </Box>
           </Paper>
 
           {/* Available Drones List */}
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Available Drones</Typography>
-            <Stack spacing={2}>
-              {drones.map((drone) => (
-                <Box key={drone._id} sx={{ 
-                  p: 2, 
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  borderRadius: 1,
-                  '&:hover': {
-                    bgcolor: 'action.hover'
-                  }
-                }}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Box>
-                      <Typography variant="subtitle1">{drone.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {drone.droneModel} • {drone.status}
-                      </Typography>
+          <Paper sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            height: 'calc(60vh - 24px)'
+          }}>
+            <Box sx={{ 
+              p: 2, 
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+              position: 'sticky',
+              top: 0,
+              zIndex: 1
+            }}>
+              <Typography variant="h6">Available Drones</Typography>
+            </Box>
+            <Box sx={{ 
+              p: 2, 
+              overflow: 'auto',
+              flex: 1
+            }}>
+              <Stack spacing={2}>
+                {drones
+                  .filter(drone => drone.status === 'available')
+                  .map((drone) => (
+                    <Box key={drone._id} sx={{ 
+                      p: 2, 
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      borderRadius: 1,
+                      '&:hover': {
+                        bgcolor: 'action.hover'
+                      }
+                    }}>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Box>
+                          <Typography variant="subtitle1">{drone.name}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {drone.droneModel} • {drone.status}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {getBatteryIcon(drone.batteryLevel)}
+                          <Typography variant="body2">{drone.batteryLevel}%</Typography>
+                        </Box>
+                      </Stack>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      {getBatteryIcon(drone.batteryLevel)}
-                      <Typography variant="body2">{drone.batteryLevel}%</Typography>
-                    </Box>
-                  </Stack>
-                </Box>
-              ))}
-            </Stack>
+                  ))}
+              </Stack>
+            </Box>
           </Paper>
         </Box>
 
         {/* Right Column */}
-        <Box sx={{ flex: 1 }}>
-          {/* Battery Status */}
-          <Paper sx={{ p: 2, mb: 3, height: '33vh', overflow: 'auto' }}>
-            <Typography variant="h6" gutterBottom>Battery Status</Typography>
-            <Stack spacing={2}>
-              {drones.map((drone) => (
-                <Box key={drone._id}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
-                    <Typography variant="subtitle2">{drone.name}</Typography>
-                    <Typography variant="body2">{drone.batteryLevel}%</Typography>
-                  </Stack>
-                  <Box sx={{ 
-                    width: '100%', 
-                    height: 8, 
-                    bgcolor: 'grey.200',
-                    borderRadius: 1,
-                    overflow: 'hidden'
-                  }}>
-                    <Box sx={{ 
-                      width: `${drone.batteryLevel}%`, 
-                      height: '100%', 
-                      bgcolor: drone.batteryLevel < 20 ? 'error.main' : 
-                              drone.batteryLevel < 50 ? 'warning.main' : 'success.main'
-                    }} />
-                  </Box>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Stats Overview */}
+          <Paper sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            height: '20vh',
+            minHeight: '150px'
+          }}>
+            <Box sx={{ 
+              p: 2, 
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+              position: 'sticky',
+              top: 0,
+              zIndex: 1
+            }}>
+              <Typography variant="h6">Fleet Overview</Typography>
+            </Box>
+            <Box sx={{ 
+              p: 2, 
+              overflow: 'auto',
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Stack direction="row" spacing={4} justifyContent="space-between" sx={{ width: '100%' }}>
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">Total Drones</Typography>
+                  <Typography variant="h4">{totalDrones}</Typography>
                 </Box>
-              ))}
-            </Stack>
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">Active Drones</Typography>
+                  <Typography variant="h4">{activeDrones}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">In Maintenance</Typography>
+                  <Typography variant="h4">{maintenanceDrones}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">Low Battery</Typography>
+                  <Typography variant="h4">{lowBatteryDrones}</Typography>
+                </Box>
+              </Stack>
+            </Box>
           </Paper>
 
           {/* Running Missions */}
-          <Paper sx={{ p: 2, height: 'calc(50vh - 24px)', overflow: 'auto' }}>
-            <RunningMissions />
+          <Paper sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            height: 'calc(80vh - 24px)'
+          }}>
+            <Box sx={{ 
+              p: 2, 
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+              position: 'sticky',
+              top: 0,
+              zIndex: 1
+            }}>
+              <Typography variant="h6">Running Missions</Typography>
+            </Box>
+            <Box sx={{ 
+              p: 2, 
+              overflow: 'auto',
+              flex: 1
+            }}>
+              <RunningMissions />
+            </Box>
           </Paper>
         </Box>
       </Box>

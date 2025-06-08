@@ -93,30 +93,25 @@ const MissionForm: React.FC<MissionFormProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white shadow sm:rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">
-              {isEdit ? 'Edit Mission' : 'Create New Mission'}
-            </h1>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="w-full h-100vh">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
               {/* Left side - Map */}
               <div className="space-y-4">
-                <h2 className="text-lg font-medium text-gray-900">Flight Path Planning</h2>
-                <div className="h-[500px] rounded-lg overflow-hidden border border-gray-200">
+                <h1 className="mb-4 text-2xl font-bold text-gray-900">
+                  {isEdit ? 'Edit Mission' : 'Create New Mission'}
+                </h1>
+                <div className="h-[450px] rounded-lg overflow-hidden border border-gray-200">
                   <Map
                     waypoints={formData.flightPath}
                     onWaypointAdd={handleWaypointAdd}
                     onWaypointRemove={handleWaypointRemove}
                   />
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Waypoints ({formData.flightPath.length})</h3>
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                <div className="rounded-lg ">
+                  <h3 className="mx-2 mb-2 text-base font-semibold text-gray-700">Waypoints ({formData.flightPath.length})</h3>
+                  <div className="space-y-2 overflow-y-auto max-h-44">
                     {formData.flightPath.map((waypoint, index) => (
-                      <div key={index} className="flex items-center justify-between bg-white p-2 rounded">
+                      <div key={index} className="flex items-center justify-between px-4 py-2 rounded bg-gray-50">
                         <span className="text-sm">
                           Point {index + 1}: {waypoint.lat.toFixed(6)}, {waypoint.lng.toFixed(6)}
                         </span>
@@ -133,10 +128,10 @@ const MissionForm: React.FC<MissionFormProps> = ({
               </div>
 
               {/* Right side - Form */}
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+              <form onSubmit={handleSubmit} className="py-10 space-y-6">
+                <div className="space-y-1">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Mission Name
                     </label>
                     <input
@@ -146,12 +141,13 @@ const MissionForm: React.FC<MissionFormProps> = ({
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm"
+                      placeholder="Enter mission name"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Description
                     </label>
                     <textarea
@@ -161,12 +157,13 @@ const MissionForm: React.FC<MissionFormProps> = ({
                       onChange={handleChange}
                       required
                       rows={3}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm"
+                      placeholder="Enter mission description"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="site" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="site" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Site
                     </label>
                     <input
@@ -176,54 +173,134 @@ const MissionForm: React.FC<MissionFormProps> = ({
                       value={formData.site}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm"
+                      placeholder="Enter site location"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="pattern" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="pattern" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Flight Pattern
                     </label>
-                    <select
-                      id="pattern"
-                      name="pattern"
-                      value={formData.pattern}
-                      onChange={handleChange}
-                      required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                    >
-                      <option value="perimeter">Perimeter</option>
-                      <option value="crosshatch">Crosshatch</option>
-                      <option value="custom">Custom</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        id="pattern"
+                        name="pattern"
+                        value={formData.pattern}
+                        onChange={handleChange}
+                        required
+                        className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm appearance-none cursor-pointer pr-10"
+                      >
+                        <option value="perimeter">Perimeter</option>
+                        <option value="crosshatch">Crosshatch</option>
+                        <option value="custom">Custom</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
-                    <label htmlFor="assignedDrone" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="assignedDrone" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Assigned Drone
                     </label>
-                    <select
-                      id="assignedDrone"
-                      name="assignedDrone"
-                      value={formData.assignedDrone}
-                      onChange={handleChange}
-                      required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                    >
-                      <option value="">Select a drone</option>
-                      {drones.map(drone => (
-                        <option key={drone._id} value={drone._id}>
-                          {drone.name} ({drone.droneModel})
-                        </option>
+                    <div className="relative">
+                      <select
+                        id="assignedDrone"
+                        name="assignedDrone"
+                        value={formData.assignedDrone}
+                        onChange={handleChange}
+                        required
+                        className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm appearance-none cursor-pointer pr-10"
+                      >
+                        <option value="">Select a drone</option>
+                        {drones.map(drone => (
+                          <option key={drone._id} value={drone._id}>
+                            {drone.name} ({drone.droneModel})
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="sensors" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                      Sensors
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="sensors"
+                        name="sensors"
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value && !formData.parameters.sensors.includes(value)) {
+                            setFormData(prev => ({
+                              ...prev,
+                              parameters: {
+                                ...prev.parameters,
+                                sensors: [...prev.parameters.sensors, value]
+                              }
+                            }));
+                          }
+                          e.target.value = ''; // Reset select after selection
+                        }}
+                        className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm appearance-none cursor-pointer pr-10"
+                      >
+                        <option value="">Select sensors</option>
+                        <option value="camera">Camera</option>
+                        <option value="lidar">LiDAR</option>
+                        <option value="thermal">Thermal</option>
+                        <option value="multispectral">Multispectral</option>
+                        <option value="gps">GPS</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {formData.parameters.sensors.map((sensor, index) => (
+                        <div
+                          key={index}
+                          className="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full"
+                        >
+                          {sensor}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFormData(prev => ({
+                                ...prev,
+                                parameters: {
+                                  ...prev.parameters,
+                                  sensors: prev.parameters.sensors.filter((_, i) => i !== index)
+                                }
+                              }));
+                            }}
+                            className="inline-flex items-center justify-center w-4 h-4 ml-2 rounded-full hover:bg-blue-200 focus:outline-none"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
                       ))}
-                    </select>
+                    </div>
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-gray-700">Parameters</h3>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <h3 className="text-sm font-semibold text-gray-700">Parameters</h3>
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
                       <div>
-                        <label htmlFor="altitude" className="block text-xs text-gray-500">
+                        <label htmlFor="altitude" className="block text-sm font-medium text-gray-600 mb-1.5">
                           Altitude (m)
                         </label>
                         <input
@@ -233,11 +310,12 @@ const MissionForm: React.FC<MissionFormProps> = ({
                           value={formData.parameters.altitude}
                           onChange={handleChange}
                           required
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm"
+                          placeholder="Enter altitude"
                         />
                       </div>
                       <div>
-                        <label htmlFor="overlap" className="block text-xs text-gray-500">
+                        <label htmlFor="overlap" className="block text-sm font-medium text-gray-600 mb-1.5">
                           Overlap (%)
                         </label>
                         <input
@@ -247,11 +325,12 @@ const MissionForm: React.FC<MissionFormProps> = ({
                           value={formData.parameters.overlap}
                           onChange={handleChange}
                           required
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm"
+                          placeholder="Enter overlap"
                         />
                       </div>
                       <div>
-                        <label htmlFor="frequency" className="block text-xs text-gray-500">
+                        <label htmlFor="frequency" className="block text-sm font-medium text-gray-600 mb-1.5">
                           Frequency (Hz)
                         </label>
                         <input
@@ -261,7 +340,8 @@ const MissionForm: React.FC<MissionFormProps> = ({
                           value={formData.parameters.frequency}
                           onChange={handleChange}
                           required
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          className="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors duration-200 ease-in-out sm:text-sm"
+                          placeholder="Enter frequency"
                         />
                       </div>
                     </div>
@@ -272,23 +352,20 @@ const MissionForm: React.FC<MissionFormProps> = ({
                   <button
                     type="button"
                     onClick={() => navigate('/missions')}
-                    className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={formData.flightPath.length === 0}
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
                     {isEdit ? 'Update Mission' : 'Create Mission'}
                   </button>
                 </div>
               </form>
             </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

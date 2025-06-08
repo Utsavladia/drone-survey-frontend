@@ -75,9 +75,9 @@ const EditMission: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <div className="w-12 h-12 mx-auto border-b-2 border-blue-500 rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
@@ -86,9 +86,9 @@ const EditMission: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen px-4 py-8 bg-gray-50 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center">
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <div className="relative px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
             <strong className="font-bold">Error: </strong>
             <span className="block sm:inline">{error}</span>
           </div>
@@ -99,9 +99,9 @@ const EditMission: React.FC = () => {
 
   if (!mission) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen px-4 py-8 bg-gray-50 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center">
-          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+          <div className="relative px-4 py-3 text-yellow-700 bg-yellow-100 border border-yellow-400 rounded" role="alert">
             <strong className="font-bold">Warning: </strong>
             <span className="block sm:inline">Mission not found</span>
           </div>
@@ -111,9 +111,7 @@ const EditMission: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white shadow sm:rounded-lg">
+    <div >
           <MissionForm
             mission={mission}
             drones={drones}
@@ -121,8 +119,6 @@ const EditMission: React.FC = () => {
             isEdit={true}
           />
         </div>
-      </div>
-    </div>
   );
 };
 
